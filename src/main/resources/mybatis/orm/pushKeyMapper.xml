@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pushKeyMapper">
+    <select id="queryKey" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select PUSH_KEY pushKey from t_push_key where prov_code =#{provCode} and state='2'
+	</select>
+	<select id="queryRsaKey" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select PUBLIC_KEY publicKey from t_rsa_keys where prov_code =#{provCode} and state='1'
+	</select>
+	
+	<select id="querySignInfo" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select CREATE_DATE createDate from t_sign_info where 
+		REQUEST_SOURCE=#{requestSource} AND TRANSACTION_ID=#{transactionId} AND BILL_ID=#{billId} 
+		AND TIME_TAG=#{timeTag} AND STATE=#{state}
+	</select>
+	<update id="updateSignState" parameterType="java.util.Map">
+		update t_sign_info set STATE={state},STATE_DESC=#{stateDesc} where 
+		REQUEST_SOURCE=#{requestSource} AND TRANSACTION_ID=#{transactionId} AND BILL_ID=#{billId} 
+		AND TIME_TAG=#{timeTag}
+	</update>
+	<insert id="saveSignInfo" parameterType="java.util.Map">
+		insert into t_sign_info(REQUEST_SOURCE,OP_CODE,TRANSACTION_ID,BILL_ID,REQUEST_TYPE,BUSI_TYPE,TIME_TAG,STATE_DESC,STATE,CREATE_DATE,SIGNATURE) 
+		values(#{requestSource},#{opCode},#{transactionId},#{billId},#{requestType},#{busiType},#{timeTag},#{stateDesc},#{state},#{createDate},#{signature})
+	</insert>
+	<select id="getWebCacheData" resultType="java.util.Map">
+		select CACHE_TYPE cacheType,CACHE_KEY cacheKey,CACHE_VALUE cacheValue from t_web_cache_data where state='1'
+	</select>
+</mapper>
